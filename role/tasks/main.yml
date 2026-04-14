@@ -1,0 +1,7 @@
+---
+# tasks file for role.yml
+- name: Read the PKG manager report
+  ansible.builtin.command: "head /var/log/dpkg.log"
+  register: report
+  when: ansible_distribution == "Ubuntu"
+  changed_when: false

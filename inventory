@@ -1,1 +1,8 @@
+[ubuntu]
+managed ansible_user=ubuntu
 
+[rhel]
+managed2  ansible_user=ec2-user
+
+#[suse]
+#managed1 ansible_user=ec2-user

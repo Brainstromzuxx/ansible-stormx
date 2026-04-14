@@ -1,0 +1,6 @@
+---
+# handlers file for role.yml
+- name: Restart the chronyd
+  ansible.builtin.service:
+    name: chronyd
+    state: restarted

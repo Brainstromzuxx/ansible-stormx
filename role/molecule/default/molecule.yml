@@ -1,0 +1,17 @@
+---
+# Dependency management (download roles/collections)
+#
+driver:
+  name: docker
+
+platforms: 
+   - name: ubuntu_instance
+     image: geerlingguy/docker-ubuntu2204-ansible:latest
+
+provisioner:
+   name: ansible
+
+verifier: 
+   name: ansible
+      
+

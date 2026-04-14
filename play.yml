@@ -1,0 +1,36 @@
+---
+- hosts: all
+  roles:
+    - role
+
+  tasks:
+    - name: Know my OS version
+      ansible.builtin.command: "echo {{ansible_distribution}} {{ansible_distribution_version}}"
+      register: version
+      changed_when: false
+
+    - name: Install cronie
+      ansible.builtin.package:
+        name: chrony
+        state: present
+      register: install
+      when: ansible_distribution == "SLES"
+      notify: restart the chronyd
+
+    - name: Version output
+      ansible.builtin.debug:
+        msg:
+          - "{{ version }}"
+          - "{{ install }}"
+    - name: Setup the shutdown cronjob
+      ansible.builtin.cron:
+        name: shutdown script
+        minute: 30
+        hour: 18
+        job: "/sbin/shutdown -h now"
+        user: root
+        state: present
+
+    - name: DPKG report
+      ansible.builtin.debug:
+        msg: "{{ report }}"
