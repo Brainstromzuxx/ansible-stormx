@@ -1,0 +1,41 @@
+---
+- hosts: managed2
+  gather_facts: true
+  tasks:
+    - name: Install the selinux lib for rhel
+      ansible.builtin.package:
+        name:
+          - python3-libselinux
+          - policycoreutils-python-utils
+        state: present
+      when: ansible_distribution == "RedHat"
+
+    - name: Install the lib req for ubuntu
+      ansible.builtin.package:
+        name:
+          - python3-selinux
+          - policycoreutils
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Selinux setup
+      ansible.posix.selinux:
+        policy: targeted
+        state: enforcing
+
+    - name: Apply the rules for the new files
+      community.general.sefcontext:
+        target: /var/log/dnf.log
+        setype: httpd_sys_content_t
+        state: present
+      register: context
+
+    - name: Apply the changes to the disk
+      ansible.builtin.command: restorecon -Rv /var/log/dnf.log
+      when: context.changed
+
+    - name: Allow nginx to connect 69 hosts
+      ansible.posix.seboolean:
+        name: httpd_can_sendmail
+        state: true
+        persistent: true

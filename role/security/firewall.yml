@@ -1,0 +1,38 @@
+---
+- hosts: managed2
+  tasks:
+    - name: Check the firewall
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Install the firewall
+      ansible.builtin.yum:
+        name: firewalld
+        state: started
+      when: "'firewalld' is not in ansible_facts.packages"
+          #  notify: restart firewall
+
+          #    handlers: 
+          # - name: restart firewall
+          # service: 
+          #name: firewalld
+          #state: restarted
+
+    - name: Add the rules
+      ansible.posix.firewalld:
+        port: 80/tcp
+        zone: external
+        state: enabled
+        immediate: true
+        permanent: true
+
+    - name: Add multiple rules at once with with-items
+      ansible.posix.firewalld:
+        state: "{{ item.state }}"
+        port: "{{ item.port }}"
+        zone: external
+        immediate: true
+        permanent: true
+      loop:
+        - { state: "enabled", port: "443/tcp" }
+        - { state: "enabled", port: "22/tcp" }
