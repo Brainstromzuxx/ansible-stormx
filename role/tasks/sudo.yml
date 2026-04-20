@@ -1,16 +1,15 @@
 ---
-  - hosts: managed2
-    tasks:
-      - name: create new user
-        user:
-          name: vignesh
-          state: present
+- hosts: managed2
+  tasks:
+    - name: create new user
+      user:
+        name: vignesh
+        state: present
+        home: /home/vignesh
 
-      - name: Provide sudo privilege
-        lineinfile:
-          dest: /etc/sudoers
-          line: "vignesh ALL:(ALL) NOPASWD: useradd, passwd"
-          create: true
-          validate: "/usr/bin/visudo -cf %s"
-
-      
+    - name: Provide sudo privilege
+      lineinfile:
+        dest: /etc/sudoers
+        line: "vignesh ALL=(ALL) NOPASSWD: /usr/sbin/useradd, /usr/bin/passwd"
+        create: true
+        validate: "/usr/sbin/visudo -cf %s"
