@@ -1,7 +1,0 @@
----
-# tasks file for role.yml
-- name: read the PKG manager report
-  command: "cat /var/log/dpkg/dpkg.log | head"
-  register: report
-  changed_when: false
-
